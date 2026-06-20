@@ -47,6 +47,14 @@ pip install cryptography zxcvbn
 
 Desde la carpeta del proyecto:
 
+### Versión con Interfaz Gráfica (Recomendado)
+
+```
+python gui.py
+```
+
+### Versión de Consola
+
 ```
 python main.py
 ```
@@ -79,6 +87,7 @@ config.ini    Rutas y archivos de la aplicación.
 passman.py    PasswordManager: derivación de clave, cifrado y descifrado.
 util.py       Util: lógica de menús, generador y medidor de fortaleza.
 main.py       Punto de entrada y menús.
+gui.py        Punto de entrada de la interfaz gráfica (GUI) con CustomTkinter.
 ```
 
 Los datos se almacenan en la carpeta `Datos/`, que se crea automáticamente:
