@@ -452,6 +452,7 @@ class PasswordManagerGUI(ctk.CTk):
                 "Copiado",
                 f"La contraseña de '{data['name']}' fue copiada al portapapeles."
             )
+            
         btn_reveal = ctk.CTkButton(card, text="👁️ Ver", width=90, height=40, fg_color="#3a3a3a", hover_color="#4a4a4a", command=toggle_reveal)
         btn_reveal.pack(side="left", padx=5)
 
