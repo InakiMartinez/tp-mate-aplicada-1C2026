@@ -2,6 +2,9 @@ import os
 import base64
 import getpass
 import configparser
+import re
+import secrets
+import string
 
 from passman import *
 from configparser import *
@@ -26,29 +29,53 @@ class Util:
 
 	def is_password_strong(self, password):
 		"""
-		Mide la fortaleza de la contraseña usando zxcvbn.
-
-		Retorna True solo si obtiene el puntaje maximo (4).
+		Valida que la contraseña cumpla los 5 criterios de fortaleza:
+		longitud >= 12, mayuscula, minuscula, numero y caracter especial.
 		"""
 
-		result = zxcvbn(password)
+		return all(self.evaluate_password_criteria(password).values())
 
-		if result['score'] == 4:
-			return True
+	def evaluate_password_criteria(self, password):
+		"""
+		Evalua cada criterio de fortaleza por separado.
 
-		return False
+		Retorna un dict { criterio: bool }.
+		"""
+
+		return {
+			"length":  len(password) >= 12,
+			"lower":   bool(re.search(r'[a-z]', password)),
+			"upper":   bool(re.search(r'[A-Z]', password)),
+			"digit":   bool(re.search(r'\d', password)),
+			"special": bool(re.search(r'[^A-Za-z0-9]', password)),
+		}
 
 	def get_strong_password(self, length=12):
 		"""
-		Genera una contraseña aleatoria que supere el medidor de fortaleza.
+		Genera una contraseña aleatoria que cumple garantizadamente
+		los 5 criterios de fortaleza.
 		"""
 
-		password = base64.b64encode(os.urandom(length)).decode()
+		lower_chars = string.ascii_lowercase
+		upper_chars = string.ascii_uppercase
+		digit_chars = string.digits
+		special_chars = "!@#$%^&*()_+-=<>?"
 
-		while not self.is_password_strong(password):
-			password = base64.b64encode(os.urandom(length)).decode()
+		all_chars = lower_chars + upper_chars + digit_chars + special_chars
 
-		return password
+		# Aseguramos al menos un caracter de cada tipo
+		password_chars = [
+			secrets.choice(lower_chars),
+			secrets.choice(upper_chars),
+			secrets.choice(digit_chars),
+			secrets.choice(special_chars),
+		]
+
+		password_chars += [secrets.choice(all_chars) for _ in range(length - len(password_chars))]
+
+		secrets.SystemRandom().shuffle(password_chars)
+
+		return "".join(password_chars)
 
 	def get_user_password(self):
 		"""
