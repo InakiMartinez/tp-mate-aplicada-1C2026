@@ -445,17 +445,14 @@ class PasswordManagerGUI(ctk.CTk):
 
         # MODIFICADO: Ahora copia estructura JSON clave:valor
         def copy_to_clipboard():
-            import json
-            formato_json = {
-                "nombre": data['name'],
-                "password": data['password']
-            }
-            json_string = json.dumps(formato_json, ensure_ascii=False)
-
             self.clipboard_clear()
-            self.clipboard_append(json_string)
-            messagebox.showinfo("Copiado", f"Datos de '{data['name']}' copiados en formato JSON al portapapeles.")
-
+            self.clipboard_append(data['password'])
+            self.update()  # Mantiene el contenido del portapapeles al cerrar la ventana
+            messagebox.showinfo(
+                "Copiado",
+                f"La contraseña de '{data['name']}' fue copiada al portapapeles."
+            )
+            
         btn_reveal = ctk.CTkButton(card, text="👁️ Ver", width=90, height=40, fg_color="#3a3a3a", hover_color="#4a4a4a", command=toggle_reveal)
         btn_reveal.pack(side="left", padx=5)
 
